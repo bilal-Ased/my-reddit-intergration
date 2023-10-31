@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RedditAuthController;
 use App\Http\Controllers\RedditController;
+use App\Http\Controllers\RedditPostController;
 
 
 /*
@@ -24,3 +25,5 @@ Route::get('/', function () {
 Route::get('/login/reddit', [RedditAuthController::class,'redirectToReddit']);
 Route::get('/login/reddit/callback',[RedditAuthController::class,'handleRedditCallback']);
 Route::get('/reddit-posts', [RedditController::class,'index']);
+Route::get('/create-reddit-post',[RedditPostController::class,'index']);
+Route::get('/create-reddit-post',[RedditPostController::class,'create']);

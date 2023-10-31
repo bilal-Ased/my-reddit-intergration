@@ -18,8 +18,7 @@ class RedditAuthController extends Controller
             'response_type' => 'code',
             'state' => bin2hex(random_bytes(16)),
             'redirect_uri' => config('services.reddit.redirect'),
-            'scope' => 'read identity', // Add necessary scopes here
-
+            'scope' => 'read submit identity', // Add necessary scopes for your use case
         ];
 
         return redirect("$redditAuthUrl?" . http_build_query($queryParams));
@@ -44,6 +43,10 @@ class RedditAuthController extends Controller
             ],
         ]);
 
+        if ($response->getStatusCode() !== 200) {
+            return redirect('/')->with('error', 'Reddit authentication failed.');
+        }
+
         $accessToken = json_decode($response->getBody()->getContents(), true)['access_token'];
 
         // Fetch posts from a specific subreddit
@@ -53,11 +56,13 @@ class RedditAuthController extends Controller
             ],
         ]);
 
+        if ($response->getStatusCode() !== 200) {
+            return redirect('/')->with('error', 'Failed to fetch Reddit posts.');
+        }
+
         $posts = json_decode($response->getBody()->getContents(), true);
 
         return view('reddit-posts', ['posts' => $posts]);
     }
-
-
 
 }
